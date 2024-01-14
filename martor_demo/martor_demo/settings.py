@@ -14,6 +14,14 @@ import os
 import tempfile
 from pathlib import Path
 
+
+from dotenv import dotenv_values
+from dotenv import load_dotenv
+
+
+load_dotenv()
+config = dotenv_values(".env")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -98,9 +106,14 @@ WSGI_APPLICATION = 'martor_demo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config['db_name'],
+        'USER': config['db_user'],
+        'PASSWORD': config['db_pw'],
+        'HOST': config['db_host'],
+        'PORT': config.get('db_port', 3306),
+    },
+
 }
 
 
@@ -143,5 +156,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(tempfile.gettempdir(), 'martor_static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'martor_static')
+
+#STATIC_ROOT = os.path.join(tempfile.gettempdir(), 'martor_static')
 MEDIA_ROOT = os.path.join(tempfile.gettempdir(), 'martor_media')
